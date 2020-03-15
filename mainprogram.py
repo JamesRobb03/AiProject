@@ -23,7 +23,7 @@ with open("dataset.csv", "r") as file:
 	sideEffectCount = 0
 	for row in reader:
 
-		if drugNodeCount < 10:
+		if drugNodeCount < 4:
 
 			#Adds a drug node and a side effect node
 			drugNode = row[0]
@@ -74,7 +74,10 @@ snap.SaveEdgeList(N1, "DrugSideEffectEdgelist.txt", "Save as tab-separated list 
 #snap.PlotKCoreNodes(N1, "KCoreNodes", "Network - k-core nodes")
 
 #graph
-snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a test")
+labels = snap.TIntStrH()
+for NI in N1.Nodes():
+	labels[NI.GetId()] = str(NI.GetId())
+snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a graph of the drug side effect network.",labels)
 
 
 
