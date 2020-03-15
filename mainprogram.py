@@ -6,13 +6,16 @@ import snap
 import csv
 import hashlib
 
+#Function which converts string to an ID
 def hashName(string):
 	h = hashlib.md5()
 	h.update(string.encode("utf-8"))
 	return int(str(int(h.hexdigest(), 16))[2:11])
 
+#Creating new network
 N1 = snap.TNEANet.New()
 
+#Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
 	reader = csv.reader(file)
 	header = next(reader)
