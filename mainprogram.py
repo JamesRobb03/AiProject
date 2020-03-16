@@ -1,7 +1,3 @@
-#Read in CSV.
-#ADD Nodes.
-#ADD Edges.
-#Visualise graph
 import snap
 import csv
 import hashlib
@@ -15,6 +11,11 @@ def hashName(string):
 #Creating new network
 N1 = snap.TNEANet.New()
 
+#list for labels.
+labelList = []
+
+NodeList = []
+
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
 	reader = csv.reader(file)
@@ -23,7 +24,7 @@ with open("dataset.csv", "r") as file:
 	sideEffectCount = 0
 	for row in reader:
 
-		if drugNodeCount < 4:
+		if drugNodeCount < 500:
 
 			#Adds a drug node and a side effect node
 			drugNode = row[0]
@@ -34,6 +35,9 @@ with open("dataset.csv", "r") as file:
 				dataReturn = N1.AddNode(nodeID)
 				print "Succesfully added Drug Node - {0} ID: {1}".format(row[0], nodeID)
 				drugNodeCount = drugNodeCount + 1
+				labelList.append(row[0])
+				NodeList.append(nodeID)
+
 			except Exception as e:
 				#duplicate drug node
 				pass
@@ -45,6 +49,8 @@ with open("dataset.csv", "r") as file:
 				dataReturn = N1.AddNode(SEnodeID)
 				print "Succesfully added Side Effect Node - {0} ID: {1}".format(row[1], SEnodeID)
 				sideEffectCount = sideEffectCount + 1
+				labelList.append(row[2])
+				NodeList.append(SEnodeID)
 			except Exception as e:
 				#duplicate side effect node
 				pass
@@ -59,33 +65,36 @@ with open("dataset.csv", "r") as file:
 
 		else:
 			break
-
-		#Adds an edge between a drug node and a side effect node
-
 	
 	print "Drug Nodes : {0} , Side Effect Nodes : {1}".format(drugNodeCount, sideEffectCount)
 
 
 
-#Saving graph to text file
-snap.SaveEdgeList(N1, "DrugSideEffectEdgelist.txt", "Save as tab-separated list of edges")
-
-#snap.PlotShortPathDistr(N1, "Example", "Network - Shortest Path")
-#snap.PlotKCoreNodes(N1, "KCoreNodes", "Network - k-core nodes")
-
 #graph
-labels = snap.TIntStrH()
+#labels = snap.TIntStrH()
+#i=0
+#for NI in N1.Nodes():
+#	labels[NI.GetId()] = labelList[i]
+#	i = i+1
+#snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a graph of the drug side effect network.", labels)
+
+#I want to loop through the lists and find which side effect is most common
+#InDegV = snap.TIntPrV()
+#s#nap.GetNodeInDegV(N1, InDegV)
+#for item in InDegV:
+#    print("node ID %d: in-degree %d" % (item.GetVal1(), item.GetVal2()))
+
+position = 0
+i = 0
+largestDegree = 0
+
 for NI in N1.Nodes():
-	labels[NI.GetId()] = str(NI.GetId())
-snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a graph of the drug side effect network.",labels)
+	NodePointer = N1.GetNI(NodeList[i])
+	inDegree = NodePointer.GetInDeg()
+	if inDegree>largestDegree:
+		largestDegree = inDegree
+		position = i
+	#print "{0} has in degree {1}".format(NodeList[i], inDegree)
+	i=i+1  
 
-
-
-
-
-#Loop through csv and add all nodes that it contains.
-#use if statement to loop through and try and add all nodes.
-#once all nodes have been added add all edges.
-#try and work out attributes.
-
-#display graph.
+print "Most common side effect : {0} - With in degree of {1}".format(labelList[position], largestDegree)
