@@ -24,7 +24,7 @@ with open("dataset.csv", "r") as file:
 	sideEffectCount = 0
 	for row in reader:
 
-		if drugNodeCount < 500:
+		if drugNodeCount <= 2:
 
 			#Adds a drug node and a side effect node
 			drugNode = row[0]
@@ -71,12 +71,12 @@ with open("dataset.csv", "r") as file:
 
 
 #graph
-#labels = snap.TIntStrH()
-#i=0
-#for NI in N1.Nodes():
-#	labels[NI.GetId()] = labelList[i]
-#	i = i+1
-#snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a graph of the drug side effect network.", labels)
+labels = snap.TIntStrH()
+i=0
+for NI in N1.Nodes():
+	labels[NI.GetId()] = labelList[i]
+	i = i+1
+snap.DrawGViz(N1, snap.gvlNeato, "graph.png", "a graph of the drug side effect network.", labels)
 
 #I want to loop through the lists and find which side effect is most common
 #InDegV = snap.TIntPrV()
@@ -84,17 +84,34 @@ with open("dataset.csv", "r") as file:
 #for item in InDegV:
 #    print("node ID %d: in-degree %d" % (item.GetVal1(), item.GetVal2()))
 
-position = 0
-i = 0
-largestDegree = 0
 
-for NI in N1.Nodes():
-	NodePointer = N1.GetNI(NodeList[i])
-	inDegree = NodePointer.GetInDeg()
-	if inDegree>largestDegree:
-		largestDegree = inDegree
-		position = i
-	#print "{0} has in degree {1}".format(NodeList[i], inDegree)
-	i=i+1  
 
-print "Most common side effect : {0} - With in degree of {1}".format(labelList[position], largestDegree)
+#For Harry
+
+def findMostCommonDrug(network, numberOfSideEffects):
+	position = 0
+	i = 0
+	largestDegree = 0
+
+	topSideEffectList = []
+
+	for NI in network.Nodes():
+		NodePointer = network.GetNI(NodeList[i])
+		inDegree = NodePointer.GetInDeg()
+		if inDegree>largestDegree:
+			largestDegree = inDegree
+			position = i
+		
+		i=i+1  
+
+	topSideEffectList.append(labelList[position])
+
+	j = 0
+	while topSideEffectList.len() < numberOfSideEffects:
+		NodePointer = network.GetNI(NodeList[i])
+		inDegree = NodePointer.GetInDeg()
+		if inDegree ==
+
+
+
+	print "Most common side effect : {0} - With in degree of {1}".format(labelList[position], largestDegree)
