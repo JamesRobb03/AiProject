@@ -18,7 +18,7 @@ labelList = []
 NodeList = []
 
 #Change this value to determine how many drugs are used (up to 640)
-AmountOfDrugNodes = 4
+AmountOfDrugNodes = 10
 
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
@@ -99,13 +99,15 @@ def colourGraph(graphName):
 					inDegree = NodePointer.GetInDeg()
 
 					if inDegree == 0:
-						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#b8e8a2")) 
+						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#84b5e0")) #b8e8a2
 					elif inDegree == 1:
 						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#ffdede")) 
 					elif inDegree == 2:
-						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#ff9696")) 
+						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#ff9696"))
+					elif inDegree == 3:
+						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#ff2b2b"))  
 					else:
-						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#ff2b2b")) 
+						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#990000")) 
 
 					i = i+1
 				else:
@@ -147,6 +149,6 @@ def findMostCommonDrug(network, numberOfSideEffects):
 
 
 #Calling function above that draws a graph.
-drawGraph(N1, labelList, "GraphOf4Drugs.png", "A graph of 4 drugs and their side effects")
+drawGraph(N1, labelList, "GraphOf10Drugs.png", "A graph of 10 drugs and their side effects")
 print "RENDERED BLACK AND WHITE "
-colourGraph("GraphOf4Drugs")
+colourGraph("GraphOf10Drugs")
