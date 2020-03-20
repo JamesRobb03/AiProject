@@ -18,7 +18,7 @@ labelList = []
 NodeList = []
 
 #Change this value to determine how many drugs are used (up to 640)
-AmountOfDrugNodes = 640
+AmountOfDrugNodes = 2
 
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
@@ -77,16 +77,17 @@ with open("dataset.csv", "r") as file:
 	print "Drug Nodes : {0} , Side Effect Nodes : {1}".format(AmountOfDrugNodes, sideEffectCount)
 
 
-
-#function which draws a neato graph for a network
-def drawGraph(network, listOfLabels, graphName, graphDesc):
+#function which saves a .dot file to be rendered later.
+def saveGraph(network, listOfLabels, graphName, graphDesc):
 	labels = snap.TIntStrH()
 	i=0
 	for NI in network.Nodes():
 		labels[NI.GetId()] = listOfLabels[i]
 		i = i+1
 
-	snap.DrawGViz(network, snap.gvlNeato, graphName, graphDesc, labels)
+	snap.SaveGViz(network, graphName, graphDesc, labels)
+
+
 #function which takes a black and white graph and adds colours
 def colourGraph(graphName):
 	with open("{0}.dot".format(graphName), 'r') as dotFile:
@@ -116,7 +117,6 @@ def colourGraph(graphName):
 
 	graphviz.render('neato', 'png', "{0}colour.dot".format(graphName))
 
-
 #Function which gets the amount of very common, common, rare
 def getCommonalities(network, veryCommonBoundry, RareNumber):
 	vcomCount = 0
@@ -140,7 +140,6 @@ def getCommonalities(network, veryCommonBoundry, RareNumber):
 	print "Amount of rare side effects (<{0} drugs in common) : {1}".format(RareNumber, rarecount)
 	print "Amount of common side effects (<{0} and >{2} drugs in common) : {1}".format(veryCommonBoundry, comCount, RareNumber)	
 	print "Amount of very common side effects (>={0} drugs in common) : {1}".format(veryCommonBoundry, vcomCount)
-
 
 #For Harry
 def findMostCommonDrug(network, numberOfSideEffects):
@@ -172,9 +171,8 @@ def findMostCommonDrug(network, numberOfSideEffects):
 	print "Most common side effect : {0} - With in degree of {1}".format(labelList[position], largestDegree)
 
 
-#Calling function above that draws a graph.
-#drawGraph(N1, labelList, "GraphOf10Drugs.png", "A graph of 10 drugs and their side effects")
-#print "RENDERED BLACK AND WHITE "
-#colourGraph("GraphOf10Drugs")
+#Calling functions above that saves a DOT file then draws a graph.
+saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
+colourGraph("GraphOf2Drugs")
 
-getCommonalities(N1, 250, 10)
+#getCommonalities(N1, 100, 5)
