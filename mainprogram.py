@@ -18,7 +18,7 @@ labelList = []
 NodeList = []
 
 #Change this value to determine how many drugs are used (up to 640)
-AmountOfDrugNodes = 10
+AmountOfDrugNodes = 640
 
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
@@ -74,7 +74,7 @@ with open("dataset.csv", "r") as file:
 		else:
 			break
 	
-	print "Drug Nodes : {0} , Side Effect Nodes : {1}".format(drugNodeCount-1, sideEffectCount)
+	print "Drug Nodes : {0} , Side Effect Nodes : {1}".format(AmountOfDrugNodes, sideEffectCount)
 
 
 
@@ -87,7 +87,7 @@ def drawGraph(network, listOfLabels, graphName, graphDesc):
 		i = i+1
 
 	snap.DrawGViz(network, snap.gvlNeato, graphName, graphDesc, labels)
-
+#function which takes a black and white graph and adds colours
 def colourGraph(graphName):
 	with open("{0}.dot".format(graphName), 'r') as dotFile:
 		with open("{0}colour.dot".format(graphName), 'w') as outFile:
@@ -98,6 +98,7 @@ def colourGraph(graphName):
 					NodePointer = N1.GetNI(NodeList[i])
 					inDegree = NodePointer.GetInDeg()
 
+					#rewrite for different drug amounts
 					if inDegree == 0:
 						outFile.write('	{0} [label = "{1}", style=filled, fillcolor="{2}"];\n'.format(nodeID, labelList[i], "#84b5e0")) #b8e8a2
 					elif inDegree == 1:
@@ -116,6 +117,29 @@ def colourGraph(graphName):
 	graphviz.render('neato', 'png', "{0}colour.dot".format(graphName))
 
 
+#Function which gets the amount of very common, common, rare
+def getCommonalities(network, veryCommonBoundry, RareNumber):
+	vcomCount = 0
+	comCount = 0
+	rarecount = 0
+	i=0
+	for NI in network.Nodes():
+		NodePointer = network.GetNI(NodeList[i])
+		inDeg = NodePointer.GetInDeg()
+		if inDeg==0:
+			pass
+		elif inDeg<RareNumber:
+			rarecount=rarecount+1
+		elif inDeg < veryCommonBoundry:
+			comCount = comCount+1
+		else:
+			vcomCount = vcomCount+1
+		
+		i=i+1  
+
+	print "Amount of rare side effects (<{0} drugs in common) : {1}".format(RareNumber, rarecount)
+	print "Amount of common side effects (<{0} and >{2} drugs in common) : {1}".format(veryCommonBoundry, comCount, RareNumber)	
+	print "Amount of very common side effects (>={0} drugs in common) : {1}".format(veryCommonBoundry, vcomCount)
 
 
 #For Harry
@@ -149,6 +173,8 @@ def findMostCommonDrug(network, numberOfSideEffects):
 
 
 #Calling function above that draws a graph.
-drawGraph(N1, labelList, "GraphOf10Drugs.png", "A graph of 10 drugs and their side effects")
-print "RENDERED BLACK AND WHITE "
-colourGraph("GraphOf10Drugs")
+#drawGraph(N1, labelList, "GraphOf10Drugs.png", "A graph of 10 drugs and their side effects")
+#print "RENDERED BLACK AND WHITE "
+#colourGraph("GraphOf10Drugs")
+
+getCommonalities(N1, 250, 10)
