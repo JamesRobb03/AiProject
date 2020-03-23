@@ -20,7 +20,7 @@ labelList = []
 NodeList = []
 
 #Change this value to determine how many drugs are used (up to 640)
-AmountOfDrugNodes = 640
+AmountOfDrugNodes = 3
 
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
@@ -208,16 +208,16 @@ def findMostCommonDrug(network, numberOfSideEffects):
 
 
 #Calling functions above that saves a DOT file then draws a graph.
-#saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
-#colourGraph("GraphOf2Drugs")
+saveGraph(N1, labelList, "GraphOf3Drugs.dot", "A graph of 3 drugs and their side effects")
+colourGraph("GraphOf3Drugs")
 
 #snap.SaveEdgeList(N1, 'network_edgelist.txt')
 
 
-getCommonalities(N1, 100, 5)
+#getCommonalities(N1, 100, 5)
 
 
-findMostCommonDrug(N1, 25)
+#findMostCommonDrug(N1, 25)
 
 # g = nx.read_edgelist('network_edgelist.txt', create_using=nx.Graph(), nodetype=int)
 # print nx.info(g)
