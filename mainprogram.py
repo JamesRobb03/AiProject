@@ -2,6 +2,8 @@ import snap
 import csv
 import hashlib
 import graphviz
+import networkx as nx
+import matplotlib.pyplot as plt
 
 #Function which converts string to an ID
 def hashName(string):
@@ -203,11 +205,23 @@ def findMostCommonDrug(network, numberOfSideEffects):
 	for j in range(len(topSideEffectNameList)):
 		print "{0}\t{1} : {2}".format(j+1,topSideEffectNameList[j], topSideEffectDegreeList[j])
 
+
+
 #Calling functions above that saves a DOT file then draws a graph.
 #saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
 #colourGraph("GraphOf2Drugs")
 
-#getCommonalities(N1, 100, 5)
+#snap.SaveEdgeList(N1, 'network_edgelist.txt')
+
+
+getCommonalities(N1, 100, 5)
 
 
 findMostCommonDrug(N1, 25)
+
+# g = nx.read_edgelist('network_edgelist.txt', create_using=nx.Graph(), nodetype=int)
+# print nx.info(g)
+# sp=nx.spring_layout(g)
+# plt.axis('off')
+# nx.draw_networkx(g, pos=sp,with_labels=False,node_size=35)
+# plt.show()
