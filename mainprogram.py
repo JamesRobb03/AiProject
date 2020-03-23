@@ -18,7 +18,7 @@ labelList = []
 NodeList = []
 
 #Change this value to determine how many drugs are used (up to 640)
-AmountOfDrugNodes = 2
+AmountOfDrugNodes = 640
 
 #Adding nodes and edges to network by reading the CSV
 with open("dataset.csv", "r") as file:
@@ -141,6 +141,14 @@ def getCommonalities(network, veryCommonBoundry, RareNumber):
 	print "Amount of common side effects (<{0} and >{2} drugs in common) : {1}".format(veryCommonBoundry, comCount, RareNumber)	
 	print "Amount of very common side effects (>={0} drugs in common) : {1}".format(veryCommonBoundry, vcomCount)
 
+
+def checkInArray(number, array):
+	found = False
+	for i in range(len(array)):
+		if array[i]==number:
+			found = True
+	return found		
+
 #For Harry
 def findMostCommonDrug(network, numberOfSideEffects):
 	position = 0
@@ -150,6 +158,7 @@ def findMostCommonDrug(network, numberOfSideEffects):
 
 	topSideEffectNameList = []
 	topSideEffectDegreeList = []
+	topSideEffectPosition = []
 
 	for NI in network.Nodes():
 		NodePointer = network.GetNI(NodeList[i])
@@ -162,30 +171,43 @@ def findMostCommonDrug(network, numberOfSideEffects):
 
 	topSideEffectNameList.append(labelList[position])
 	topSideEffectDegreeList.append(largestDegree)
+	topSideEffectPosition.append(position)
 
+	lastPosition = 0
 	
-	
-	while topSideEffectNameList.len() < numberOfSideEffects:
+	while len(topSideEffectNameList) < numberOfSideEffects:
+
+		i=0
+		position =0
+		largestDegree = 0
+		
+
 		for NI in network.Nodes():
-                        NodePointer = network.GetNI(NodeList[i])
-                        inDegree = NodePointer.GetInDeg()
-                        if inDegree > largestDegree & inDegree < topSideEffectDegreeList[i-1] & position != (position-1):
-                                largestDegree = inDegree
-                                position = i
-                        
-                        i=i+1
+			NodePointer = network.GetNI(NodeList[i])
+			inDegree = NodePointer.GetInDeg()
+			check = checkInArray(i, topSideEffectPosition)
+			if inDegree > largestDegree and inDegree<=topSideEffectDegreeList[lastPosition] and check == False:
+				largestDegree = inDegree
+				position = i
+			
+			i=i+1
 
-                topSideEffectNameList.append(labelList[position])
-                topSideEffectDegreeList.append(largestDegree)
+		topSideEffectNameList.append(labelList[position])
+		topSideEffectDegreeList.append(largestDegree)
+		topSideEffectPosition.append(position)
+		lastPosition = lastPosition+1
 
-        print "----{0} Most common side effects----".format(numberOfSideEffects)
-        print "Rank\tName\tDegree"
+	print "----{0} Most common side effects----".format(numberOfSideEffects)
+	print "Rank\tName\tDegree"
         
-	for j in range(topSideEffectNameList.len()):
-                print "{0}\t{1}\t{2}".format(j,topSideEffectNameList[j], topSideEffectDegreeList[j])
+	for j in range(len(topSideEffectNameList)):
+		print "{0}\t{1} : {2}".format(j+1,topSideEffectNameList[j], topSideEffectDegreeList[j])
 
 #Calling functions above that saves a DOT file then draws a graph.
-saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
-colourGraph("GraphOf2Drugs")
+#saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
+#colourGraph("GraphOf2Drugs")
 
 #getCommonalities(N1, 100, 5)
+
+
+findMostCommonDrug(N1, 25)
