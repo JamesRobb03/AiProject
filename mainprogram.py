@@ -145,9 +145,11 @@ def getCommonalities(network, veryCommonBoundry, RareNumber):
 def findMostCommonDrug(network, numberOfSideEffects):
 	position = 0
 	i = 0
+	j = 0
 	largestDegree = 0
 
-	topSideEffectList = []
+	topSideEffectNameList = []
+	topSideEffectDegreeList = []
 
 	for NI in network.Nodes():
 		NodePointer = network.GetNI(NodeList[i])
@@ -158,18 +160,29 @@ def findMostCommonDrug(network, numberOfSideEffects):
 		
 		i=i+1  
 
-	topSideEffectList.append(labelList[position])
+	topSideEffectNameList.append(labelList[position])
+	topSideEffectDegreeList.append(largestDegree)
 
-	j = 0
-	while topSideEffectList.len() < numberOfSideEffects:
-		NodePointer = network.GetNI(NodeList[i])
-		inDegree = NodePointer.GetInDeg()
-		
+	
+	
+	while topSideEffectNameList.len() < numberOfSideEffects:
+		for NI in network.Nodes():
+                        NodePointer = network.GetNI(NodeList[i])
+                        inDegree = NodePointer.GetInDeg()
+                        if inDegree > largestDegree & inDegree < topSideEffectDegreeList[i-1] & position != (position-1):
+                                largestDegree = inDegree
+                                position = i
+                        
+                        i=i+1
 
+                topSideEffectNameList.append(labelList[position])
+                topSideEffectDegreeList.append(largestDegree)
 
-
-	print "Most common side effect : {0} - With in degree of {1}".format(labelList[position], largestDegree)
-
+        print "----{0} Most common side effects----".format(numberOfSideEffects)
+        print "Rank\tName\tDegree"
+        
+	for j in range(topSideEffectNameList.len()):
+                print "{0}\t{1}\t{2}".format(j,topSideEffectNameList[j], topSideEffectDegreeList[j])
 
 #Calling functions above that saves a DOT file then draws a graph.
 saveGraph(N1, labelList, "GraphOf2Drugs.dot", "A graph of 2 drugs and their side effects")
